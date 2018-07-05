@@ -62,7 +62,7 @@ int main()
 set<string> loadTargetBusTimeUP(string datapath)
 {
 	set<string> res;
-	ifstream fin(datapath.c_str());  //c_str()返回char型指针
+	ifstream fin(datapath.c_str()); //c_str()返回char型指针
 	string str, substri;
 	getline(fin, str);
 	while (getline(fin, str))
@@ -73,7 +73,7 @@ set<string> loadTargetBusTimeUP(string datapath)
 		string infokey = thisline[2] + "-" + hourMinSec[0] + "-" + thisline[6];
 		res.insert(infokey);
 	}
-	fin.close() ;
+	fin.close();
 
 	cout << "目标线路已读入完毕！" << endl;
 
