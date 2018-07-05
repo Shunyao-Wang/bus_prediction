@@ -73,7 +73,7 @@ set<string> loadTargetBusTimeUP(string datapath)
 		string infokey = thisline[2] + "-" + hourMinSec[0] + "-" + thisline[6];
 		res.insert(infokey);
 	}
-	fin.close();
+	fin.close() ;
 
 	cout << "目标线路已读入完毕！" << endl;
 
