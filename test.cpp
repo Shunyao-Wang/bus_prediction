@@ -45,6 +45,7 @@ int main()
 {
 	string predPath = "data/toBePredicted_forUser.csv";
 	set<string> targetBusTimeUp = loadTargetBusTimeUP(predPath);
+	/*  targetBusTimeUp保存busid-hour-up  */
 
 	string basicpath = "../bus_data/train1-24/train2017";
 	map<string, double> busTimeUpStopCost = loadTrainBusTimeUPStop(basicpath, targetBusTimeUp);
@@ -59,33 +60,34 @@ int main()
 	return 1;
 }
 
-set<string> loadTargetBusTimeUP(string datapath)
+set<string> loadTargetBusTimeUP(string datapath) //datapath待预测文件
 {
 	set<string> res;
-	ifstream fin(datapath.c_str());  //c_str()返回char型指针
+	ifstream fin(datapath.c_str()); //c_str()返回char型指针
 	string str, substri;
-	getline(fin, str);
+	getline(fin, str); //按行读入文件，传入str
 	while (getline(fin, str))
 	{
-		vector<string> thisline = SplitLine(",", str);
+		vector<string> thisline = SplitLine(",", str); //按,分割内容，并存到thisline
 		// 提取待预测的小时
 		vector<string> hourMinSec = SplitLine(":", thisline[3]);
 		string infokey = thisline[2] + "-" + hourMinSec[0] + "-" + thisline[6];
-		res.insert(infokey);
+		res.insert(infokey); //res保存busid-hour-up
 	}
 	fin.close();
 
 	cout << "目标线路已读入完毕！" << endl;
 
-	string respath = "data/targetPath.csv";
+	string respath = "data/targetPath.csv"; //保存busid-hour-up到文件
 	ofstream fou(respath.c_str());
 	for (set<string>::iterator it = res.begin(); it != res.end(); ++it)
 		fou << *it << endl;
 	fou.close();
 
-	return res;
+	return res; //res保存busid-hour-up
 }
 
+/* basicpath为训练集文件名前缀，targetBusTimeUp保存预测集busid-hour-up  */
 map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetBusTimeUp)
 {
 
@@ -101,8 +103,8 @@ map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetB
 		stringstream isis;
 		isis << i;
 		string stri;
-		isis >> stri;  //把int型转化为string型
-		string datapath = basicpath + stri + ".csv";
+		isis >> stri; //把int型转化为string型
+		string datapath = basicpath + stri + ".csv"; //组合成文件名
 
 		cout << "	...读入数据 " << datapath << endl;
 
@@ -122,7 +124,7 @@ map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetB
 
 			// 若时间段不对，直接跳过
 			// 删除掉	晚上23点~早上6点以前的数据；
-			vector<string> vecHourMinSec = SplitLine(":", thisline[2]);
+			vector<string> vecHourMinSec = SplitLine(":", thisline[2]);  //训练集时间戳
 			int thishour = atoi(vecHourMinSec[0].c_str());
 			if (thishour >= 23)
 				continue;
@@ -144,12 +146,13 @@ map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetB
 				string strhour;
 				stringstream isis;
 				isis << thishour;
-				isis >> strhour;  //int转char
-				string newkey = thisline[1] + "-" + strhour + "-" + thisline[9];
+				isis >> strhour; //int转char
+				string newkey = thisline[1] + "-" + strhour + "-" + thisline[9]; //组成训练集的busid-hour-up
 
-				if (targetBusTimeUp.count(newkey))
+				if (targetBusTimeUp.count(newkey)) //是否在预测集中出现过
 				{
 					todayRecords[newkey].insert(make_pair(thisTime, atoi(thisline[11].c_str())));
+					/* busid-hour-up为索引，(当天时间戳,下一站)为值 */
 				}
 			}
 			if (thismin < 20)
@@ -192,7 +195,7 @@ map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetB
 
 			// 处理这一bus-time-up的数据
 			// 记录上一个站点
-			int lastStop = itbustime->second.begin()->second;
+			int lastStop = itbustime->second.begin()->second; //下一站
 
 			map<int, int> correctTimeStop; //用于存放“站点切换”的时刻
 
