@@ -43,13 +43,13 @@ map<string, vector<double>> predPathTimes(string basicpath, map<string, double> 
 
 int main()
 {
-	string predPath = "data/toBePredicted_forUser.csv";
+	string predPath = "C:/Users/Administrator/Desktop/toBePredicted_update_0523.csv";
 	set<string> targetBusTimeUp = loadTargetBusTimeUP(predPath);
 
-	string basicpath = "../bus_data/train1-24/train2017";
+	string basicpath = "C:/Users/Administrator/Desktop/train1-24/train2017";
 	map<string, double> busTimeUpStopCost = loadTrainBusTimeUPStop(basicpath, targetBusTimeUp);
 
-	string respath = "data/submitted.csv";
+	string respath = "C:/Users/Administrator/Desktop/submitted.csv";
 	map<string, vector<double>> results = predPathTimes(predPath, busTimeUpStopCost, respath);
 
 	//string finalpath = "C:/Users/Administrator/Desktop/submitted_revised.csv";
@@ -77,7 +77,7 @@ set<string> loadTargetBusTimeUP(string datapath)
 
 	cout << "目标线路已读入完毕！" << endl;
 
-	string respath = "data/targetPath.csv";
+	string respath = "C:/Users/Administrator/Desktop/targetPath.csv";
 	ofstream fou(respath.c_str());
 	for (set<string>::iterator it = res.begin(); it != res.end(); ++it)
 		fou << *it << endl;
@@ -101,7 +101,7 @@ map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetB
 		stringstream isis;
 		isis << i;
 		string stri;
-		isis >> stri;  //把int型转化为string型
+		isis >> stri;
 		string datapath = basicpath + stri + ".csv";
 
 		cout << "	...读入数据 " << datapath << endl;
@@ -144,7 +144,7 @@ map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetB
 				string strhour;
 				stringstream isis;
 				isis << thishour;
-				isis >> strhour;  //int转char
+				isis >> strhour;
 				string newkey = thisline[1] + "-" + strhour + "-" + thisline[9];
 
 				if (targetBusTimeUp.count(newkey))
@@ -318,7 +318,7 @@ map<string, double> loadTrainBusTimeUPStop(string basicpath, set<string> targetB
 	}
 
 	// 最好把这个文件写出来！
-	string respath = "data/busTimeUpStopCost.csv";
+	string respath = "C:/Users/Administrator/Desktop/busTimeUpStopCost.csv";
 	ofstream fou(respath.c_str());
 	for (map<string, double>::iterator it = res.begin(); it != res.end(); ++it)
 		fou << it->first << "," << it->second << endl;
@@ -361,7 +361,7 @@ map<string, vector<double>> predPathTimes(string datapath, map<string, double> b
 			else
 			{
 				// 没找到，怎么办呢？直接填充一个数字吧~~ yin叔等选手讲，平均值大约在109或者128什么的，我就填110吧（本来也想填上下游时间的，可是懒得搞了）
-				timeCosts.push_back(125);
+				timeCosts.push_back(110);
 			}
 		}
 		// 最后，再累加即可
